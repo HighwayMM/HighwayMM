@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HighwayMM</title>
+<meta name="description" content="HighwayMM: a taxonomy-grounded benchmark and early-warning system for road weather hazards from roadside CCTV.">
+<meta property="og:title" content="HighwayMM">
+<meta property="og:description" content="A taxonomy-grounded benchmark and early-warning system for road weather hazards from roadside CCTV.">
+<meta property="og:image" content="assets/teaser.png">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f5f6f8; --fg:#1b1f24; --muted:#5b6470; --line:#dde1e6;
+  --accent:#1f5fae; --accent-fg:#ffffff;
+  --adv:#d9a400; --warn:#e06a00; --dan:#c62828; --ok:#2e7d32;
+  --code:#f0f2f5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121417; --bg2:#1b1e23; --fg:#e7e9ec; --muted:#a2a9b3; --line:#2c3138;
+    --accent:#6ea8ff; --accent-fg:#0b1220; --code:#1e2228;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121417; --bg2:#1b1e23; --fg:#e7e9ec; --muted:#a2a9b3; --line:#2c3138;
+  --accent:#6ea8ff; --accent-fg:#0b1220; --code:#1e2228;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+header.hero{padding:56px 0 28px;text-align:center}
+.hero h1{font-size:clamp(2rem,5vw,3rem);margin:0 0 .2em;letter-spacing:-.02em}
+.hero .sub{font-size:clamp(1.05rem,2.4vw,1.35rem);color:var(--fg);max-width:820px;margin:0 auto .9em;font-weight:500}
+.hero .venue{color:var(--muted);margin:0 0 1.4em}
+.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:.45em;padding:.55em 1.1em;border-radius:999px;
+  background:var(--fg);color:var(--bg);text-decoration:none;font-weight:600;font-size:.95rem;border:0;cursor:pointer}
+.btn.off{background:var(--bg2);color:var(--muted);border:1px solid var(--line);cursor:default}
+.btn small{font-weight:400;opacity:.8}
+figure{margin:0}
+figure img{width:100%;height:auto;display:block;border-radius:6px}
+figcaption{color:var(--muted);font-size:.92rem;margin-top:.6em;line-height:1.5}
+section{padding:40px 0;border-top:1px solid var(--line)}
+section h2{font-size:1.6rem;margin:0 0 .7em;letter-spacing:-.01em}
+section h3{font-size:1.1rem;margin:1.6em 0 .5em}
+.lead{font-size:1.05rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:28px 0 8px}
+.stat{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:14px 14px 12px}
+.stat b{display:block;font-size:1.55rem;line-height:1.15;letter-spacing:-.01em}
+.stat span{color:var(--muted);font-size:.86rem;line-height:1.35;display:block;margin-top:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.tax{display:grid;grid-template-columns:1.25fr auto 1.2fr auto .8fr;gap:10px;align-items:stretch}
+.tax .col{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tax .col h4{margin:0 0 .5em;font-size:.95rem}
+.tax .arrow{align-self:center;color:var(--muted);font-size:1.4rem}
+.tax ul{list-style:none;margin:0;padding:0;font-size:.9rem}
+.tax li{padding:3px 0;border-bottom:1px dashed var(--line)}
+.tax li:last-child{border-bottom:0}
+.tax li i{color:var(--muted);font-style:normal}
+@media (max-width:760px){.tax{grid-template-columns:1fr}.tax .arrow{transform:rotate(90deg);justify-self:center}}
+.lvl{display:inline-block;width:.8em;height:.8em;border-radius:2px;margin-right:.45em;vertical-align:-.05em}
+.l0{background:var(--ok)}.l1{background:var(--adv)}.l2{background:var(--warn)}.l3{background:var(--dan)}
+ol.steps{padding-left:1.3em;margin:.8em 0 0}
+ol.steps li{margin:.25em 0}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.93rem;min-width:600px}
+th,td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+thead th{background:var(--bg2);font-weight:600}
+tbody tr:last-child td{border-bottom:0}
+tr.ours td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:22px}
+.card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--bg)}
+.card h4{margin:0 0 .35em;font-size:1rem}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;
+  font:13.5px/1.5 ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;margin:0}
+.bib{position:relative}
+.bib button{position:absolute;top:8px;right:8px;font:inherit;font-size:.82rem;padding:.3em .8em;border-radius:6px;
+  border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}
+.note{background:var(--bg2);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.93rem}
+footer{padding:28px 0 48px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);text-align:center}
+.theme{position:fixed;top:12px;right:12px;font:inherit;font-size:.85rem;padding:.35em .7em;border-radius:8px;
+  border:1px solid var(--line);background:var(--bg2);color:var(--fg);cursor:pointer}
+</style>
+</head>
+<body>
+<button class="theme" id="theme" aria-label="Toggle light or dark theme">◐</button>
+
+<div class="wrap">
+<header class="hero">
+  <h1>HighwayMM</h1>
+  <p class="sub">A Taxonomy-Grounded Benchmark and Early-Warning System for Road Weather Hazards from Roadside CCTV</p>
+  <p class="venue">Anonymous submission</p>
+  <div class="btns" id="links">
+    <!-- filled from LINKS below; an empty URL shows the button greyed out -->
+  </div>
+</header>
+
+<figure>
+  <img src="assets/teaser.png" alt="Grid of road-weather hazards: our Korean CCTV in the top rows and external sources below">
+  <figcaption>Hazards in HighwayMM. Top: our Korean expressway and national-road CCTV. Bottom: the seven external sources that fill its seasonal and hazard gaps. Frames are shown unmasked here; models see overlay-masked frames.</figcaption>
+</figure>
+
+<div class="stats">
+  <div class="stat"><b>9,031</b><span>clips from 8.8k Korean ITS / KEC cameras</span></div>
+  <div class="stat"><b>7</b><span>external sources from the USA, Norway, China and Korea</span></div>
+  <div class="stat"><b>6 → 9 → 4</b><span>attributes → hazards → warning levels</span></div>
+  <div class="stat"><b>85%</b><span>snow-cover recall through an unseen blizzard at 0.03 false alarms per camera-day</span></div>
+  <div class="stat"><b>≈1,040</b><span>cameras per RTX 3090 at one clip per minute</span></div>
+</div>
+</div>
+
+<section id="abstract"><div class="wrap">
+  <h2>Abstract</h2>
+  <p class="lead">Roadside CCTV cameras watch almost every kilometre of modern highways, yet they are rarely used to <em>warn</em> drivers about weather hazards.
+  We introduce <b>HighwayMM</b>, a benchmark for road-weather hazard recognition and early warning from fixed roadside cameras.
+  HighwayMM pairs 9,031 clips from 8.8k Korean expressway and national-road cameras with seven external sources, selected to fill its seasonal and hazard gaps: highway fog, coastal road flooding, a blizzard, hurricane and storm-surge timelapses, Nordic road cameras, and summer storms from roadside weather-station cameras with sensor-derived labels.
+  All sources are harmonised under a unified hazard taxonomy, in which six observable attributes determine nine hazard types and four warning levels. The benchmark comes with overlay-masked inputs, camera-disjoint and cross-source splits, test sets with human or sensor labels, and a human-labelled gold set of our own footage.</p>
+  <p class="lead">We show that taxonomy-factorised supervision is essential: learning the same data as flat weather classes loses more than 10 points.
+  A prompted 7B vision-language model fails exactly on the rare hazards, missing floods and confusing fog grades.
+  On eight external test sets, simple probes on frozen vision-language features with an exact taxonomy pushforward to warning levels outperform a fine-tuned ConvNeXt (+5.0) and Qwen2.5-VL-7B (+16.0), and our interpretable taxonomy-query model TaxoWarn-S is competitive but not better: data coverage, not architecture, drives accuracy.
+  The gold set exposes the open problem: on our own cameras, every model only matches the VLM whose pseudo-labels it was trained on (46–47 attribute F1).
+  Our early-warning system detects snow cover through an unseen blizzard at 85% recall with 0.03 false alarms per camera-day and serves about 1,000 cameras per GPU. Flooding on unseen cameras and Korean night-time precipitation remain open challenges.</p>
+</div></section>
+
+<section id="data"><div class="wrap">
+  <h2>Where the data comes from</h2>
+  <figure>
+    <img src="assets/source_map.png" alt="Map: 8,622 Korean ITS/KEC cameras, one CCTV icon each, and external sources in the USA, Norway, China and Korea">
+    <figcaption>Left: our 8,622 Korean ITS / KEC cameras, one icon per camera, with a zoom on Seoul. Right: the external sources. Filled markers are camera locations; hollow markers mean only the region is known.</figcaption>
+  </figure>
+  <div class="two" style="margin-top:24px">
+    <div>
+      <h3 style="margin-top:0">Seven sources, each filling a gap</h3>
+      <ul>
+        <li><b>FVEI</b>: highway fog with visibility grades (Yunnan, China)</li>
+        <li><b>FloodCam-NC</b>: coastal road flooding (Outer Banks, NC)</li>
+        <li><b>NYSDOT 511NY</b>: an unseen January 2022 blizzard (Long Island, NY)</li>
+        <li><b>V-FloodNet</b>: hurricane and storm-surge timelapses</li>
+        <li><b>Norway road cameras</b>: Nordic winter and traffic levels</li>
+        <li><b>Iowa DOT RWIS</b>: summer storms with pavement-sensor labels</li>
+        <li><b>TSBOW</b>: Korean city CCTV, test only</li>
+      </ul>
+      <p>Test sets use human, physics or sensor labels only. Splits are disjoint by camera and by time.</p>
+    </div>
+    <figure>
+      <img src="assets/coverage.png" alt="Coverage matrix of sources by hazard after combination">
+      <figcaption>Coverage after combination: which source contributes which hazard.</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<section id="taxonomy"><div class="wrap">
+  <h2>One taxonomy for every source</h2>
+  <p>Datasets labelled with different flat classes cannot be merged. HighwayMM maps every source to six <b>observable attributes</b>; hazards and warning levels are <b>derived</b> by rules and never labelled directly. Each source labels only what it observes, and every label records its provenance (human, physics, sensor or VLM).</p>
+  <div class="tax">
+    <div class="col"><h4>Level 1 · attributes</h4><ul>
+      <li>precipitation <i>none · rain · snow</i></li>
+      <li>intensity <i>none · light · moderate · heavy</i></li>
+      <li>surface <i>dry · wet · water · snow · ice</i></li>
+      <li>visibility <i>clear · haze · fog-moderate · fog-dense</i></li>
+      <li>illumination <i>day · twilight · night</i></li>
+      <li>traffic <i>free · dense · congested</i></li>
+    </ul></div>
+    <div class="arrow">→</div>
+    <div class="col"><h4>Level 2 · hazards (rules)</h4><ul>
+      <li><span class="lvl l1"></span>snowfall · low visibility · congestion</li>
+      <li><span class="lvl l2"></span>heavy rain · snow cover</li>
+      <li><span class="lvl l3"></span>flooding · blizzard · icy road · dense fog</li>
+      <li><i>blizzard = snow ∧ heavy ∧ low visibility</i></li>
+    </ul></div>
+    <div class="arrow">→</div>
+    <div class="col"><h4>Level 3 · warning</h4><ul>
+      <li><span class="lvl l0"></span>normal</li>
+      <li><span class="lvl l1"></span>advisory</li>
+      <li><span class="lvl l2"></span>warning</li>
+      <li><span class="lvl l3"></span>danger</li>
+    </ul></div>
+  </div>
+  <p style="margin-top:14px">The warning level is the exact <b>pushforward</b> of the six attribute posteriors through the rules, a sum over all 2,160 attribute combinations that takes under 0.1 ms per item. It inherits the calibration of the attribute heads and cannot contradict them.</p>
+</div></section>
+
+<section id="method"><div class="wrap">
+  <h2>How it works</h2>
+  <figure>
+    <img src="assets/method_pipeline.png" alt="TaxoWarn-S and the warning system on one NYSDOT blizzard observation, in seven stages">
+    <figcaption>One observation from an unseen blizzard camera (NYSDOT 1878) through every stage. All values are outputs of the released model.</figcaption>
+  </figure>
+  <ol class="steps">
+    <li>Burned-in overlay text is masked (outlined in yellow).</li>
+    <li>One frozen SigLIP 2 pass over three frames gives patch tokens and a global embedding.</li>
+    <li>One learnable query per taxonomy attribute cross-attends to the tokens.</li>
+    <li>A learned gate mixes each query head with a global head, giving calibrated attribute posteriors.</li>
+    <li>A soft rule layer derives the nine hazards.</li>
+    <li>The exact taxonomy pushforward gives the warning-level distribution.</li>
+    <li>Over the storm, the warning system issues levels with an early advisory and hysteresis.</li>
+  </ol>
+  <p>Per-attribute attention on more scenes: <a href="assets/query_attention.png">query attention maps</a>. The queries separate on some scenes, such as this blizzard, and attend to similar regions on others.</p>
+</div></section>
+
+<section id="results"><div class="wrap">
+  <h2>Results</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Model (frozen SigLIP 2 features unless noted)</th><th>8 external tests<br>GT-mean</th><th>Warning F1</th><th>Gold set (ours)<br>attribute F1</th></tr></thead>
+    <tbody>
+      <tr><td>SigLIP 2 zero-shot</td><td>60.7</td><td>29.1</td><td>n/a</td></tr>
+      <tr><td>Qwen2.5-VL-7B, prompted (also our pseudo-labeller)</td><td>64.7</td><td>63.0</td><td><b>47.0</b></td></tr>
+      <tr><td>Flat weather classes</td><td>69.1</td><td>54.1</td><td>43.3</td></tr>
+      <tr><td>ConvNeXt-B, fine-tuned end to end</td><td>75.7</td><td>57.6</td><td>40.4</td></tr>
+      <tr><td>Linear probe + taxonomy pushforward</td><td>79.2</td><td>64.9</td><td>44.4</td></tr>
+      <tr><td>MLP probe + taxonomy pushforward</td><td>80.7</td><td><b>66.8</b></td><td>46.2</td></tr>
+      <tr><td>MLP probe + object-detection descriptors</td><td><b>81.1</b></td><td>65.1</td><td>46.9</td></tr>
+      <tr class="ours"><td>TaxoWarn-S (taxonomy-query model)</td><td>79.8</td><td>64.4</td><td>43.0</td></tr>
+    </tbody>
+  </table></div>
+  <p style="color:var(--muted);font-size:.9rem;margin-top:8px">Means over 3 seeds. Full tables with standard deviations are in the paper and the code repository.</p>
+
+  <div class="findings">
+    <div class="card"><h4>Taxonomy supervision is essential</h4><p>The same data learned as flat weather classes loses more than 10 points; fog F1 drops from about 92 to 35.</p></div>
+    <div class="card"><h4>Prompting a VLM is not enough</h4><p>Qwen2.5-VL-7B is near chance on flooding (48.5 AUROC) and collapses fog grades (39.8 F1).</p></div>
+    <div class="card"><h4>Coverage, not architecture</h4><p>Our footage alone gives 64.1 GT-mean, external data alone 73.7. Removing the summer source drops wet-road AUROC from 87.2 to 75.7.</p></div>
+    <div class="card"><h4>Open problem: the source domain</h4><p>On our own cameras every trained model only matches its VLM pseudo-labeller (46–47 F1). Night-time "snow" is mostly rain seen by infrared cameras; flooding on unseen cameras stays at AUROC ≤ 64.</p></div>
+  </div>
+</div></section>
+
+<section id="warning"><div class="wrap">
+  <h2>Early warning on recorded footage</h2>
+  <p>The replay demo runs the complete pipeline on video or image files as if they were arriving live: frames → overlay masking → SigLIP 2 → TaxoWarn-S → thresholds, early advisory and hysteresis. Run on the held-out cameras with the paper's operating points, it reproduces the paper's warning numbers.</p>
+  <figure>
+    <img src="assets/demo_nysdot_1878.gif" alt="Replay of NYSDOT camera 1878 through the January 2022 blizzard" loading="lazy">
+    <figcaption>NYSDOT camera 1878 through the January 2022 blizzard, unseen in training. The frame border and badge show the issued level; the bottom strip shows the levels so far, with dots for the human labels.</figcaption>
+  </figure>
+  <div class="two" style="margin-top:24px">
+    <figure>
+      <img src="assets/demo_ours_winter.gif" alt="Replay of three winter clips from our Korean footage" loading="lazy">
+      <figcaption>Three winter clips from our Korean footage.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/warning_tradeoff.png" alt="Hazard recall versus false-alarm rate for flooding (FloodCam) and snow cover (NYSDOT blizzard)" loading="lazy">
+      <figcaption>Hazard recall against false-alarm rate. Snow cover through the blizzard is detected early at a low false-alarm rate; flooding on unseen cameras remains hard for every method.</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<section id="release"><div class="wrap">
+  <h2>Data and code release</h2>
+  <div class="note">The dataset (frames, labels, features) will be released after review. Licence plates and faces are blurred, and non-traffic files are excluded.</div>
+  <div class="tbl" style="margin-top:16px"><table>
+    <thead><tr><th>Part</th><th style="text-align:left">Release</th></tr></thead>
+    <tbody>
+      <tr><td>Our ITS / KEC snapshots and pilot clips</td><td style="text-align:left;white-space:normal">Overlay-masked frames, metadata, labels with per-attribute provenance, features</td></tr>
+      <tr><td>Gold labels and hazard-mining audit</td><td style="text-align:left;white-space:normal">With the dataset</td></tr>
+      <tr><td>NYSDOT 511NY (CC BY 4.0), FloodCam-NC, Pixabay flood images</td><td style="text-align:left;white-space:normal">Redistributed with attribution</td></tr>
+      <tr><td>FVEI, V-FloodNet, Norway road cameras, Iowa DOT RWIS, TSBOW</td><td style="text-align:left;white-space:normal">Item IDs plus download and preprocessing scripts only</td></tr>
+    </tbody>
+  </table></div>
+  <p>The code repository contains the data pipeline, the TaxoWarn-S model, training and evaluation, the early-warning system and replay demo, and the generators for every table and figure in the paper. Code is MIT-licensed; each data source keeps its own licence.</p>
+</div></section>
+
+<section id="cite"><div class="wrap">
+  <h2>Citation</h2>
+  <div class="bib">
+<pre id="bibtex">@inproceedings{highwaymm,
+  title     = {HighwayMM: A Taxonomy-Grounded Benchmark and Early-Warning System for Road Weather Hazards from Roadside CCTV},
+  author    = {Anonymous},
+  booktitle = {Under review}
+}</pre>
+    <button id="copy">Copy</button>
+  </div>
+</div></section>
+
+<footer><div class="wrap">HighwayMM · anonymous submission · page source in <code>docs/index.html</code></div></footer>
+
+<script>
+// Fill these in when the links are public. An empty URL shows a greyed-out "after review" button.
+var LINKS = [
+  {label: "Paper",      url: ""},
+  {label: "Supplement", url: ""},
+  {label: "Code",       url: "https://github.com/HighwayMM/HighwayMM"},
+  {label: "Data",       url: ""}
+];
+(function(){
+  var box = document.getElementById("links");
+  LINKS.forEach(function(l){
+    var a;
+    if (l.url) { a = document.createElement("a"); a.href = l.url; a.className = "btn"; a.textContent = l.label; }
+    else { a = document.createElement("span"); a.className = "btn off"; a.innerHTML = l.label + " <small>after review</small>"; }
+    box.appendChild(a);
+  });
+  var t = document.getElementById("theme");
+  try { var s = localStorage.getItem("hmm-theme"); if (s) document.documentElement.dataset.theme = s; } catch(e) {}
+  t.onclick = function(){
+    var dark = document.documentElement.dataset.theme
+      ? document.documentElement.dataset.theme === "dark"
+      : matchMedia("(prefers-color-scheme: dark)").matches;
+    var next = dark ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("hmm-theme", next); } catch(e) {}
+  };
+  document.getElementById("copy").onclick = function(){
+    var txt = document.getElementById("bibtex").textContent, b = this;
+    if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){ b.textContent = "Copied"; setTimeout(function(){ b.textContent = "Copy"; }, 1500); });
+  };
+})();
+</script>
+</body>
+</html>

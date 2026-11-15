@@ -1,0 +1,22 @@
+# data and results are released separately, never committed
+HighwayMM_release/
+external/
+experiments/
+features/
+frames/
+raw_*/
+models/*/
+*.npz
+*.pt
+*.ckpt
+*.safetensors
+*.mp4
+*.zip
+# secrets
+token.txt
+*.token
+.env
+# python
+__pycache__/
+*.pyc
+.venv/

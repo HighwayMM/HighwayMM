@@ -1,0 +1,44 @@
+task: taxowarn
+seed: 0
+tag: main
+model:
+  name: taxowarn          # taxowarn | flat | linear | mlp
+  d: 512
+  layers: 2
+  dropout: 0.1
+  use_temporal: true
+  use_delta: true
+  use_text: true
+  use_hazard_layer: true
+  hierarchical: true
+data:
+  version: v1
+  split: split_v1
+  labels: D:/highwaymm/HighwayMM_release/annotations/labels_v1.csv
+  features: D:/highwaymm/HighwayMM_release/features/siglip2
+  text_protos: D:/highwaymm/HighwayMM_release/features/text_protos_siglip2.npz
+  use_raw: false          # true = unmasked overlays (shortcut ablation)
+  k: 8                    # 8 = video clip, 1 = single middle frame
+  sources_train: all
+  min_w: 0.0
+loss:
+  warn: 0.5
+  onset: 0.2
+  hazard_reg: 0.01
+  label_smoothing: 0.05
+train:
+  epochs: 30
+  batch_size: 128
+  eval_batch_size: 512
+  accum_steps: 1
+  lr: 5.0e-4
+  weight_decay: 0.05
+  warmup_frac: 0.05
+  amp: bf16
+  grad_clip: 1.0
+  num_workers: 2
+  log_every: 50
+  eval_every: 1
+  channels_last: false
+  freeze: []
+  resume: null

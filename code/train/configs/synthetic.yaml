@@ -1,0 +1,26 @@
+task: synthetic
+seed: 0
+tag: sanity
+model:
+  name: resnet18
+data:
+  version: synthetic-v0
+  split: none
+  num_classes: 10
+  n_train: 6000
+  n_val: 1000
+  size: 128
+train:
+  epochs: 2
+  batch_size: 64        # per GPU
+  accum_steps: 1
+  lr: 1.0e-3
+  weight_decay: 0.05
+  amp: bf16             # bf16 | fp16 | none
+  grad_clip: 1.0
+  num_workers: 4
+  log_every: 20
+  eval_every: 1
+  channels_last: true
+  freeze: []            # list of parameter-name prefixes
+  resume: null          # run dir or checkpoint path

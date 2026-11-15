@@ -1,0 +1,28 @@
+task: finetune_img
+seed: 0
+tag: base_ft_convnext
+model:
+  name: convnext_base.fb_in22k_ft_in1k
+data:
+  version: v1
+  split: split_v1
+  labels: D:/highwaymm/HighwayMM_release/annotations/labels_v1.csv
+  img_size: 224
+loss:
+  label_smoothing: 0.05
+train:
+  epochs: 6
+  batch_size: 64
+  eval_batch_size: 128
+  accum_steps: 1
+  lr: 1.0e-4
+  weight_decay: 0.05
+  warmup_frac: 0.05
+  amp: bf16
+  grad_clip: 1.0
+  num_workers: 8
+  log_every: 50
+  eval_every: 1
+  channels_last: true
+  freeze: []
+  resume: null
